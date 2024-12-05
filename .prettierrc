@@ -1,4 +1,3 @@
 {
-  "singleQuote": true,
-  "trailingComma": "all"
+  "parser": "don't run prettier for this project"
 }
