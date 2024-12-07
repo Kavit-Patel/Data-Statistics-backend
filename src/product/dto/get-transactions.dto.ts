@@ -1,6 +1,7 @@
 import { IsIn, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
 export class GetTransactionsDto {
+  @IsOptional()
   @IsString()
   @IsIn([
     'January',

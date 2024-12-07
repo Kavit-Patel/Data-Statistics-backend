@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import axios from "axios";
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateProductDto } from "./dto/create-product.dto";
+import { filters } from "src/utils/filter";
 
 @Injectable()
 export class ProductService {
@@ -29,6 +30,7 @@ export class ProductService {
 
             return "Products successfully stored in database !"
         } catch (error) {
+            console.log("ERROR: ",error)
             throw new Error("Failed to fetch or Store Data")
         }
     }
@@ -40,25 +42,13 @@ export class ProductService {
         perPage: number = 10,
       ) {
         const offset = (page - 1) * perPage;   
-        const isSearchNumeric = search ? !isNaN(Number(search)) : false;
-          const monthNumber = new Date(Date.parse(`${month} 1, 2000`)).getMonth()+1;
-        if (month && (isNaN(monthNumber)|| monthNumber>12 || monthNumber===0)) {
-          throw new Error(`Invalid month provided: ${month}`);
-        }      
+        const {monthFilter,searchFilter}=filters(month,search)
+                          
         return await this.prisma.data.findMany({
           where: {
             AND:[
-                month?
-                    {dateOfSale:{contains:`-0${monthNumber}-`}}
-                :{},
-                search?isSearchNumeric?{
-                    price:{equals:parseFloat(search)}
-                }:{
-                   OR:[
-                    {title:{contains:search}},
-                    {description:{contains:search}}
-                   ]
-                }:{}
+                monthFilter,
+                searchFilter
             ]
           },
           skip: offset,
@@ -66,44 +56,35 @@ export class ProductService {
         });
       }
       
-      async getStatistics(month?:string){
-        const monthNumber = new Date(Date.parse(`${month} 1, 2000`)).getMonth()+1;
-        if (month && (isNaN(monthNumber)|| monthNumber>12 || monthNumber===0)) {
-            throw new Error(`Invalid month provided: ${month}`);
-          }   
-        const monthFilter = monthNumber?{dateOfSale:{contains:`-0${monthNumber}-`}}:{}
-        const [totalSale,soldItems,unsoldItems]=await Promise.all([
-            this.prisma.data.aggregate({
-                _sum:{price:true},where:{
-                    ...monthFilter,sold:true
-                }
-            }),
-            this.prisma.data.count({
-                where:{
-                    ...monthFilter,sold:true
-                }
-            }),
-            this.prisma.data.count({
-                where:{
-                    ...monthFilter,
-                    sold:false
-                }
-            })
-        ])
+      async getStatistics(month?: string, search?: string, page: number = 1) {
+        const offset = (page - 1) * 10;
+        const { monthFilter, searchFilter } = filters(month, search);
+      
+        const data = await this.prisma.data.findMany({
+          where: {
+            AND: [monthFilter, searchFilter],
+          },
+          skip: offset,
+          take: 10,
+        });
+      
+        const totalSale = data.reduce((sum, item) => (item.sold ? sum + item.price : sum), 0);
+        const soldItems = data.filter((item) => item.sold).length;
+        const unsoldItems = data.filter((item) => !item.sold).length;
+      
         return {
-            totalSale:totalSale._sum.price || 0,
-            soldItems,
-            unsoldItems
-        }
+          totalSale,
+          soldItems,
+          unsoldItems,
+        };
       }
+      
 
 
-    async getBarChart(month?:string){
-        const monthNumber = new Date(Date.parse(`${month} 1, 2000`)).getMonth()+1;
-        if (month && (isNaN(monthNumber)|| monthNumber>12 || monthNumber===0)) {
-            throw new Error(`Invalid month provided: ${month}`);
-          }   
-        const monthFilter = monthNumber?{dateOfSale:{contains:`-0${monthNumber}-`}}:{}
+    async getBarChart(month?:string,search?:string,page:number=1){
+        const offset = (page - 1) * 10;   
+
+        const {monthFilter,searchFilter}=filters(month,search)
         const priceRanges = [
             { min: 0, max: 100, range: '0-100' },
             { min: 101, max: 200, range: '101-200' },
@@ -117,44 +98,66 @@ export class ProductService {
             { min: 901, max: Infinity, range: '901-above' },
           ];
         
-          const counts = await Promise.all(
-            priceRanges.map(async (range) => {
-              const count = await this.prisma.data.count({
+          const data =  await this.prisma.data.findMany({
                 where: {
-                  ...monthFilter,
-                  price: {
-                    gte: range.min,
-                    lt: range.max === Infinity ? undefined : range.max,
-                  },
+                  AND:[
+                    monthFilter,
+                    searchFilter
+                ],
                 },
+                skip:offset,
+                take:10
+                
               });
-              return { range: range.range, count };
-            }),
-          );
+
+              const counts = priceRanges.map((range) => {
+                const count = data.filter(
+                  (item) =>
+                    item.price >= range.min && (range.max === Infinity || item.price < range.max)
+                ).length;
+            
+                return { range: range.range, count };
+              });
+            
+
+              return counts
+          
         
-          return counts;
     }
 
-    async getPieChart(month?:string){
-        const monthNumber = new Date(Date.parse(`${month} 1, 2000`)).getMonth()+1;
-        if (month && (isNaN(monthNumber)|| monthNumber>12 || monthNumber===0)) {
-            throw new Error(`Invalid month provided: ${month}`);
-          }   
-        const monthFilter = monthNumber?{dateOfSale:{contains:`-0${monthNumber}-`}}:{}
-        const categories = await this.prisma.data.groupBy({
-            by:['category'],
-            where:monthFilter,
-            _count:{_all:true}
-        });
-        return categories.map(category=>({category:category.category,count:category._count._all}))
-    }
+    async getPieChart(month?: string, search?: string, page: number = 1) {
+      const offset = (page - 1) * 10;
+    
+      const { monthFilter, searchFilter } = filters(month, search);
+    
+      const data = await this.prisma.data.findMany({
+        where: {
+          AND: [monthFilter, searchFilter],
+        },
+        skip: offset,
+        take: 10,
+      });
+    
+      const categoryCounts = data.reduce((acc, item) => {
+        if (!acc[item.category]) {
+          acc[item.category] = 0;
+        }
+        acc[item.category]++;
+        return acc;
+      }, {} as Record<string, number>);
+    
+      return Object.entries(categoryCounts).map(([category, count]) => ({
+        category,
+        count,
+      }));
+    }    
 
     async getMasterData(month?:string,search?:string,page:number=1,perPage:number=10):Promise<any>{
         const [products,statistics,barChart,pieChart]=await Promise.all([
             this.getProducts(month,search,page,perPage),
-            this.getStatistics(month),
-            this.getBarChart(month),
-            this.getPieChart(month),
+            this.getStatistics(month,search,page),
+            this.getBarChart(month,search,page),
+            this.getPieChart(month,search,page),
         ]);
 
         return {

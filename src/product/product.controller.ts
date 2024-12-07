@@ -17,16 +17,16 @@ export class ProductController {
         return this.productService.getProducts(month,search,Number(page),Number(perPage));
     }
     @Get('statistics')
-    async getStatistics(@Query() query:{month?:string}){
+    async getStatistics(@Query() query:{month?:string,search?:string,page?:number}){
         return this.productService.getStatistics(query.month)
     }
 
     @Get('barChart')
-    async getBarChart(@Query() query:{month?:string}){
-        return this.productService.getBarChart(query.month)
+    async getBarChart(@Query() query:{month?:string,search?:string,page?:number}){
+        return this.productService.getBarChart(query.month,query.search,query.page)
     }
     @Get('pieChart')
-    async getPieChart(@Query() query:{month?:string}){
+    async getPieChart(@Query() query:{month?:string,search?:string,page?:number}){
         return this.productService.getPieChart(query.month)
     }
     @Get('master-data')
