@@ -9,10 +9,13 @@ async function bootstrap() {
 
   app.enableCors({
     origin:(origin,callback)=>{
+      console.log("Access request : ",origin)
       if(!origin){
+        console.log("Denied !")
         return callback(null,true)
       }
       if(allowedOrigins?.includes(origin)){
+        console.log("Allowed !")
         return callback(null,true)
       }
       callback(new Error("Not allowed by CORS !"))
@@ -22,12 +25,6 @@ async function bootstrap() {
     allowedHeaders:'Content-Type,Authorization'
 
   })
-
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    forbidNonWhitelisted: true, 
-    transform: true,  
-   }));
 
   const config = new DocumentBuilder()
     .setTitle('Products-Visualization API')
