@@ -1,85 +1,77 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+📊 Data Statistics Backend
+The Data Statistics Backend is a robust and scalable server-side application built to power the Data Statistics Dashboard frontend. It provides secure, efficient, and well-documented API endpoints for fetching, manipulating, and analyzing data. The backend is designed with scalability and performance in mind, using modern technologies and best practices.
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+🚀 Live Deployment
+The backend is live and accessible at: [Data Statistics Backend](https://data-statistics-backend.onrender.com)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+🛠️ Features
+Comprehensive API: A suite of endpoints for data retrieval, data charting, filtering, and statistics.
+Swagger Documentation: Interactive and auto-generated API documentation available at https://data-statistics-backend.onrender.com/docs.
+Efficient Data Handling: Optimized for high-volume requests and smooth integration with the frontend.
+Pagination Support: Enables efficient navigation of large datasets.
+Environment Configuration: Supports configurable API base URLs and database connections for different environments.
 
-## Description
+⚙️ Technologies Used
+Framework: nest.js
+API Documentation: Swagger UI
+Database: Postgresql
+ORM: Prisma
+📑 API Documentation
+The backend is equipped with an interactive Swagger UI for API exploration and testing.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Access Swagger UI
+Visit: https://data-statistics-backend.onrender.com/docs
 
-## Project setup
+Swagger allows you to:
 
-```bash
-$ npm install
-```
+View all available API endpoints.
+Test APIs directly from the browser.
+Understand the request/response formats and parameters.
 
-## Compile and run the project
+🖥️ Local Development
+Prerequisites
+Node.js (>= 16.0.0)
+npm or yarn
+Postgresql (local or cloud)
+Clone the Repository: git clone https://github.com/your-username/data-statistics-backend.git
+cd data-statistics-backend
+Install Dependencies: npm install
+Environment Variables: DATABASE_URL="postgresql://****:*****@localhost:5432/mydb?schema=public"
+                       PRODUCT_URL = "https://s3.amazonaws.com/roxiler.com/product_transaction.json"
+                       ALLOWED_ORIGINS = http://localhost:3000/,http://localhost:3001/,http://localhost:5173/
 
-```bash
-# development
-$ npm run start
+Run the Development Server: npm run start:dev
+The server will start on http://localhost:3001.
 
-# watch mode
-$ npm run start:dev
+📋 Available Endpoints
+Base URL: https://data-statistics-backend.onrender.com
+Here are some of the key endpoints provided by the backend:
 
-# production mode
-$ npm run start:prod
-```
+Method	Endpoint	Description
+GET	/product/master-data	Fetch all products ,first 10 products.
+GET	/product/master-data?page=2	Fetch paginated products.
+GET	/product/statistics	Retrieve sales statistics.
+GET	/product//barChart	Fetch bar chart data.
+GET	/product/pieChart	Fetch pie chart data.
 
-## Run tests
+📄 License
+This project is licensed under the MIT License. See the LICENSE file for details.
 
-```bash
-# unit tests
-$ npm run test
+🤝 Contribution
+Contributions, issues, and feature requests are welcome! Feel free to check the issues page or submit a pull request.
 
-# e2e tests
-$ npm run test:e2e
+Fork the repository.
+Create your feature branch: git checkout -b feature/my-new-feature.
+Commit your changes: git commit -m 'Add some feature'.
+Push to the branch: git push origin feature/my-new-feature.
+Submit a pull request.
 
-# test coverage
-$ npm run test:cov
-```
+🧑‍💻 Author
+Kavit-Patel @kvpatel.er@gmail.com
 
-## Resources
+GitHub: [Your GitHub Profile](https://github.com/Kavit-Patel/)
+LinkedIn: [Your LinkedIn Profile](https://www.linkedin.com/in/kavitpatel2050)
 
-Check out a few resources that may come in handy when working with NestJS:
+📞 Support
+For any questions or feedback, please feel free to open an issue or contact me directly via email at kvpatel.er@gmail.com.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
